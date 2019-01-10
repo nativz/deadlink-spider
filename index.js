@@ -1,7 +1,10 @@
 const Spider = require("./src/spider");
+const dotenv = require("dotenv");
 const fs = require("fs");
 
-const linkChecker = new Spider("http://revealmodern.dev.designvr.net", true);
+dotenv.load(".env");
+
+const linkChecker = new Spider(process.env.DOMAIN, true);
 
 linkChecker.start();
 
