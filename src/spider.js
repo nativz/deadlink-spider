@@ -1,7 +1,11 @@
 const got = require("got");
-const cheerio = require("cheerio");
 
 class Spider {
+    /**
+     * Creates a Spider.
+     * @param {string} domain The root domain of the website.
+     * @param {boolean} verbose Whether or not to log steps to the console.
+     */
     constructor(domain, verbose = false) {
         this.domain = new URL(domain).hostname;
         this.verbose = verbose;
@@ -15,12 +19,19 @@ class Spider {
         }
     }
 
-    log(content = "") {
+    /**
+     * If verbose mode is enabled, logs to console.
+     * @param {any} content The content to log.
+     */
+    log(content) {
         if (!this.verbose) return;
 
         console.log(content);
     }
 
+    /**
+     * Starts the Spider.
+     */
     start() {
         this.log("Starting...");
 
@@ -30,11 +41,18 @@ class Spider {
         this.crawl("http://" + this.domain);
     }
 
+    /**
+     * Stops the spider.
+     */
     stop() {
         this.log("Stopped.");
         this.working = false;
     }
 
+    /**
+     * Loop function for crawling the website.
+     * @param {string} url The URL to crawl.
+     */
     async crawl(url) {
         if (!this.working) return;
 
@@ -47,6 +65,10 @@ class Spider {
         }
     }
 
+    /**
+     * Checks if a URL is part of the root domain.
+     * @param {string} url The URL to test.
+     */
     urlMatchesDomain(url) {
         let isValidUrl = true;
         try {
@@ -58,6 +80,11 @@ class Spider {
         return isValidUrl;
     }
 
+    /**
+     * Crawls to a URL and saves the output to the Spider's crawlPath.
+     * @param {string} url The URL to crawl to.
+     * @returns {Promise<{url: string, result: "OK"|"WARN"|"ERROR", status: number, next?: Array<string>}>}
+     */
     async crawlToSave(url) {
         let result = await this.crawlTo(url);
 
@@ -68,8 +95,8 @@ class Spider {
     }
 
     /**
-     * Crawls to a route.
-     * @param {string} route /route
+     * Crawls to a url.
+     * @param {string} url The URL to crawl to.
      * @returns {Promise<{url: string, result: "OK"|"WARN"|"ERROR", status: number, next?: Array<string>}>}
      */
     async crawlTo(url) {
